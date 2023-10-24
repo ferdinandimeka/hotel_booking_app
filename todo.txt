@@ -1,0 +1,12 @@
+## project agenda
+1. Install required dependencies/librarfa-inverse
+2. create express server
+3. connect our server to mongo db database
+4. create database models such as, user, hotel and room models
+5. create auth controller and routes and jwt auth token(login/register)
+6. create auth and admin middleware (so that only admin can access admin parts. And
+only auth users can access our protected APIs)
+7. hotels controller and routes
+8. rooms controller and routes
+
+mongo://localhost:27017/bookingApi
