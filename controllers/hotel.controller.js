@@ -19,6 +19,24 @@ exports.createHotel = async (req, res, next) => {
     }
 }
 
+exports.deleteByHotelId = async (req, res, next) => {
+    const { hotelId } = req.params;
+
+    if (!hotelId) return next(errorUtils(400, 'hotelId is required'));
+
+    try {
+        const deleteHotel = await Hotel.findByIdAndDelete(hotelId);
+
+        if (!deleteHotel) return next(errorUtils(404, 'Hotel not found'));
+
+        res.status(200).send({
+            message: 'Hotel deleted successfully'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 exports.getHotelById = async (req, res, next) => {
     const { hotelId } = req.params;
 
@@ -37,6 +55,18 @@ exports.getHotelById = async (req, res, next) => {
 }
 
 exports.getHotels = async (req, res, next) => {
+    try {
+        const hotels = await Hotel.find().limit(req.query.limit);
+        res.status(200).send({
+            hotels: hotels,
+            message: 'Hotels fetched successfully'
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.getHotelsByMinMax = async (req, res, next) => {
     const { min, max, ...rest} = req.query;
 
     if (min && isNaN(min) || max && isNaN(max)) return next(errorUtils(400, 'min should be a number'));
@@ -116,6 +146,30 @@ exports.getHotelRooms = async (req, res, next) => {
             rooms: roomsList,
             message: 'Rooms fetched successfully'
         });
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.updateHotelById = async (req, res, next) => {
+    const { hotelId } = req.params;
+    const hotelUpdates = req.body;
+
+    if (!hotelId) return next(errorUtils(400, 'hotelId is required'));
+
+    if (!hotelUpdates) return next(errorUtils(400, 'Data not provided'));
+
+    try {
+        const updateHotel = await Hotel.findByIdAndUpdate(hotelId, hotelUpdates, {
+            new: true,
+        })
+
+        if (!updateHotel) return next(errorUtils(404, 'Hotel not found'));
+
+        res.status(200).send({
+            hotel: updateHotel,
+            message: 'Hotel updated successfully'
+        })
     } catch (error) {
         next(error)
     }
