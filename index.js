@@ -7,6 +7,7 @@ const authRoute = require('./route/auth.routes');
 const userRoute = require('./route/user.routes');
 const hotelRoute = require('./route/hotel.routes');
 const roomRoute = require('./route/room.routes');
+const bookingRoute = require('./route/book.routes');
 
 const app = express();
 dotenv.config();
@@ -41,6 +42,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/hotel', hotelRoute);
 app.use('/api/v1/room', roomRoute);
+app.use('/api/v1/booking', bookingRoute);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
