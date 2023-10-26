@@ -49,7 +49,7 @@ const HotelSchema = new mongoose.Schema(
             trim: true,
         },
         photos: {
-            type: String,
+            type: [String],
             required: true,
             trim: true,
         },
