@@ -4,7 +4,7 @@ const router = express.Router();
 const { 
     createHotel, getHotels, getHotelRooms, countHotelByType, 
     countHotelByCity, getHotelById, getHotelsByMinMax, deleteByHotelId,
-    updateHotelById, createBooking, deleteBooking
+    updateHotelById,
 } = require('../controllers/hotel.controller');
 
 router.post('/', createHotel);
@@ -16,7 +16,5 @@ router.get('/rooms', getHotelRooms);
 router.get('/count-by-type', countHotelByType);
 router.get('/count-by-city', countHotelByCity);
 router.get('/:hotelId', getHotelById);
-router.post('/:hotelId/book', createBooking);
-router.delete('/:hotelId/book/delete', deleteBooking);
 
 module.exports = router;
