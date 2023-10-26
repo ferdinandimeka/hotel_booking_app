@@ -12,7 +12,7 @@ exports.createRoom = async (req, res, next) => {
 
     try {
         const room = await newRoom.save();
-        console.log(room)
+
         try {
             await Hotel.findByIdAndUpdate(
                 hotelId,

@@ -19,8 +19,13 @@ exports.updateUser = async (req, res, next) => {
 }
 
 exports.deleteUser = async (req, res, next) => {
+
+    if (!req.params.id) return next(errorUtils(400, 'User id is required'));
+
     try {
-        await Users.findByIdAndDelete(req.params.id);
+        const user = await Users.findByIdAndDelete(req.params.id);
+
+        if (!user) return next(errorUtils(404, 'User not found'));
 
         res.status(200).send({
             message: 'User deleted successfully'
@@ -31,6 +36,9 @@ exports.deleteUser = async (req, res, next) => {
 }
 
 exports.getUser = async (req, res, next) => {
+
+    if (!req.params.id) return next(errorUtils(400, 'User id is required'));
+
     try {
         const user = await Users.findById(req.params.id);
 
@@ -48,6 +56,8 @@ exports.getUser = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
     try {
         const users = await Users.find();
+
+        if (!users) return next(errorUtils(404, 'Users not found'));
 
         res.status(200).send({
             users: users,
