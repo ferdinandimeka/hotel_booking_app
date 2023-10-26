@@ -45,6 +45,31 @@ exports.getRoom = async (req, res, next) => {
     }
 }
 
+exports.getRooms = async (req, res, next) => {
+
+    if (!req.query.page || !req.query.limit)
+    return next(errorUtils(400, 'query is required'));
+
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const sort = req.query.sort || 'createdAt';
+
+        const query = Room.find().sort(sort).skip(skip).limit(limit);
+        const rooms = await query.exec();
+        const total = await Room.countDocuments();
+
+        res.status(200).send({
+            rooms,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 exports.updateRoomAvailability = async (req, res, next) => {
 
     try {
@@ -71,6 +96,24 @@ exports.updateRoomAvailability = async (req, res, next) => {
         res.status(200).json({
             room,
             message: 'Room availability updated successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.deleteRoom = async (req, res, next) => {
+    
+    if (!req.params.roomId) return next(errorUtils(400, 'roomId is required'));
+
+    try {
+        const room = await Room.findByIdAndDelete(req.params.roomId);
+
+        if (!room) return next(errorUtils(404, 'Room not found'));
+
+        res.status(200).send({
+            success: true,
+            message: 'Room deleted successfully'
         });
     } catch (error) {
         next(error);
