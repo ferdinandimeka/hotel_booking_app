@@ -60,6 +60,7 @@ exports.getUsers = async (req, res, next) => {
         if (!users) return next(errorUtils(404, 'Users not found'));
 
         res.status(200).send({
+            success: true,
             users: users,
             message: 'Users fetched successfully'
         });
