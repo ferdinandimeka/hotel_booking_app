@@ -14,32 +14,42 @@ const roomNumberSchema = new mongoose.Schema({
 
 // Define the main room schema
 const roomSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  maxPeople: {
-    type: Number,
-    required: true,
-  },
-  description: {
-    type: String,
-    default: '', // Set the default value as an empty string
-    trim: true,
-  },
-  roomNumbers: [roomNumberSchema], // Use the subdocument schema
+
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    price: {
+      type: Number,
+      required: true,
+    },
+    
+    maxPeople: {
+      type: Number,
+      required: true,
+    },
+
+    photos: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      default: '', // Set the default value as an empty string
+      trim: true,
+    },
+    roomNumbers: [roomNumberSchema], // Use the subdocument schema
 }, {
-  timestamps: true,
+  	timestamps: true,
 });
 
 // Create a virtual property to count the total available rooms
 roomSchema.virtual('totalAvailableRooms').get(function() {
-  return this.roomNumbers.length;
+  	return this.roomNumbers.length;
 });
 
 const RoomModel = mongoose.model('Room', roomSchema);
