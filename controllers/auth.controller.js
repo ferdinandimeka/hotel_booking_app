@@ -33,7 +33,7 @@ exports.login = async (req, res, next) => {
 
         const user = await Users.findOne({ email }).select('+password');
 
-        if(!user || !(await bcrypt.compare(req.body.password, user.password))) {
+        if(!user || !(await bcrypt.compare(pass, user.password))) {
             return next(errorUtils(401, 'Incorrect email or password'));
         }
 

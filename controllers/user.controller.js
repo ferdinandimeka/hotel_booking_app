@@ -10,6 +10,7 @@ exports.updateUser = async (req, res, next) => {
         if (!user) return next(errorUtils(404, 'User not found'));
 
         res.status(200).send({
+            success: true,
             user: user,
             message: 'User updated successfully'
         });
@@ -20,14 +21,13 @@ exports.updateUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
 
-    if (!req.params.id) return next(errorUtils(400, 'User id is required'));
-
     try {
-        const user = await Users.findByIdAndDelete(req.params.id);
+        const user = await Users.findByIdAndDelete(req.query.id);
 
         if (!user) return next(errorUtils(404, 'User not found'));
 
         res.status(200).send({
+            success: true,
             message: 'User deleted successfully'
         });
     } catch (error) {
