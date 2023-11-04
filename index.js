@@ -1,6 +1,11 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const { rateLimit } = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitizer = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoute = require('./route/auth.routes');
@@ -11,6 +16,27 @@ const bookingRoute = require('./route/book.routes');
 
 const app = express();
 dotenv.config();
+
+// Security HTTP headers
+app.use(helmet());
+
+// date sanitizer against NoSQL query injection
+app.use(mongoSanitizer());
+
+// data sanitizer against site script XSS
+app.use(xss());
+
+// prevent parameter pollution
+//app.use(hpp())
+
+// Rate limiting
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+
+app.use('/api', limiter);
 
 // config
 const db = process.env.DATABASE.replace(
@@ -30,7 +56,7 @@ mongoose.connect(db, {
 // middlewares
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '15kb' }));
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', userRoute);
