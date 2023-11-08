@@ -104,40 +104,44 @@ exports.forgotPassword = async (req, res, next) => {
 }
 
 exports.resetPassword = async (req, res, next) => {
-    // get user based on the token
-    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    const hashedPassword = bcrypt.hashSync(req.body.password, 12);
+    try {
+        // get user based on the token
+        const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+        const hashedPassword = bcrypt.hashSync(req.body.password, 12);
 
-    const user = await Users.findOne({ 
-        passwordResetToken: hashedToken,
-        passwordResetExpires: { $gt: Date.now() }
-    });
+        const user = await Users.findOne({ 
+            passwordResetToken: hashedToken,
+            passwordResetExpires: { $gt: Date.now() }
+        });
 
-    // if token has not expired, and there is user, set the new password
-    if(!user) {
-        return next(errorUtils(400, 'Token is invalid or has expired'));
+        // if token has not expired, and there is user, set the new password
+        if(!user) {
+            return next(errorUtils(400, 'Token is invalid or has expired'));
+        }
+
+        user.password = hashedPassword;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        // update changedPasswordAt property for the user
+        // log the user in, send JWT
+        const token = jwt.sign(
+            { id: user._id, isAdmin: user.isAdmin },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: process.env.JWT_EXPIRES },
+            { algorithm: 'HS256' }
+        );
+
+        const { password, isAdmin, ...rest } = user._doc;
+
+        res.status(200).send({ 
+            user: { ...rest },
+            access_token: token,
+            isAdmin: isAdmin,
+            message: 'User logged in successfully'
+        });
+    } catch (error) {
+        next(error)
     }
-
-    user.password = hashedPassword;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
-
-    // update changedPasswordAt property for the user
-    // log the user in, send JWT
-    const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
-        process.env.JWT_SECRET_KEY,
-        { expiresIn: process.env.JWT_EXPIRES },
-        { algorithm: 'HS256' }
-    );
-
-    const { password, isAdmin, ...rest } = user._doc;
-
-    res.status(200).send({ 
-        user: { ...rest },
-        access_token: token,
-        isAdmin: isAdmin,
-        message: 'User logged in successfully'
-    });
 }
