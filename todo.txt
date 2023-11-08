@@ -8,5 +8,6 @@
 only auth users can access our protected APIs)
 7. hotels controller and routes
 8. rooms controller and routes
+9. booking controller and routes
 
 mongo://localhost:27017/bookingApi
