@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Header from '../components/Header'
-import NavBar from '../components/NavBar'
 import { listHotels } from '../redux/actions/hotelActions'
 import Hotels from '../components/Hotels';
 import ModernLoader from '../components/ModernLoader'
@@ -27,7 +26,6 @@ const HomeScreen = () => {
       <h3>{error}</h3>
     ) : (
       <div className='scroll-smooth'>
-        <NavBar />
         <Header />
 
         {loading ? (
