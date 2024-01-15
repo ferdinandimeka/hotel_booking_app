@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb')
 const { rateLimit } = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitizer = require('express-mongo-sanitize');
@@ -39,18 +40,42 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // config
-const db = process.env.DATABASE.replace(
+const pass = encodeURIComponent(process.env.PASSWORD)
+let dob = process.env.DATABASE.replace(
   '<password>',
-  process.env.PASSWORD
+  pass
 );
 
-// database connection
+const user = encodeURIComponent(process.env.USERNAME)
+let db = dob.replace(
+  '<username>',
+  user
+);
+
+// connect to atlas cluster
+// const client = new MongoClient(db)
+
+// async function run() {
+//   try {
+//     await client.connect()
+//     console.log('successfully connected to atlas')
+//   } catch (err) {
+//     console.log(err.stack)
+//   } finally {
+//     await client.close()
+//   }
+// }
+// run().catch(console.dir)
+
+//database connection
 mongoose.connect(db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then((res) => {
   //console.log(res.connection)
   console.log('successfully connected to database')
+}).catch((error) => {
+  console.error('Error connecting to the database:', error.message);
 });
 
 // middlewares
