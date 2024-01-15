@@ -21,8 +21,13 @@ export default {
       '2xl': {'min': '1535px'},
       // => @media (min-width: 1536px) { ... }
     },
-    extend: {},
-  },
+    extend: {
+      backgroundImage: {
+        'hero-pattern': "url('https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg')",
+        'footer-texture': "url('https://images.pexels.com/photos/9436715/pexels-photo-9436715.jpeg')",
+        },
+      },
+    },
   plugins: [],
 }
 

@@ -1,13 +1,11 @@
-/* eslint-disable react/prop-types */
-import { Spinner } from "@nextui-org/react";
+import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Loader({ color, size }) {
+const Loader = () => {
   return (
-    <Spinner 
-      label="Loading..."
-      color={color}
-      size={size}
-      className="flex justify-center items-center mt-80"
-    />
-  );
+    <div className='w-screen flex justify-center mt-72'>
+        <CircularProgress />
+    </div>
+  )
 }
+
+export default Loader

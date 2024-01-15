@@ -6,11 +6,11 @@ import Home from './screens/Home'
 function App() {
 
   return (
-      <>
+      <div className='py-3'>
         <Routes>
           <Route path="/" element={ <Home /> } />
         </Routes>
-      </>
+      </div>
   )
 }
 
